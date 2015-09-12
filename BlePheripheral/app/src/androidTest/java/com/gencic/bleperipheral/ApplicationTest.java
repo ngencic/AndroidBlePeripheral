@@ -1,4 +1,4 @@
-package com.gencic.blepheripheral;
+package com.gencic.bleperipheral;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
