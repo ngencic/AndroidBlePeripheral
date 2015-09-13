@@ -28,6 +28,26 @@
             android:text="@string/start_scan" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edit_text_msg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"/>
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:text="@string/send" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/text_view_log"
         android:layout_width="match_parent"
