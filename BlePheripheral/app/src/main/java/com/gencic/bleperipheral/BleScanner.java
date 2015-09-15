@@ -89,9 +89,9 @@ public class BleScanner {
                                 mLogger.log("Characteristic discovered: " + characteristic.getUuid());
                             }
                             gatt.setCharacteristicNotification(characteristic, true);
-                            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.DESCRIPTOR_UUID));
-                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                            gatt.writeDescriptor(descriptor);
+                            // BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.DESCRIPTOR_UUID));
+                            // descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            // gatt.writeDescriptor(descriptor);
                         }
                     }
                 }
@@ -116,7 +116,7 @@ public class BleScanner {
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
                 super.onCharacteristicChanged(gatt, characteristic);
                 if (mLogger != null) {
-                    mLogger.log("Characteristic changed");
+                    mLogger.log("Characteristic changed value: " + characteristic.getStringValue(0));
                 }
             }
         });

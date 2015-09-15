@@ -14,6 +14,7 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelUuid;
 
 import java.util.UUID;
@@ -63,6 +64,9 @@ public class BleAdvertiser {
                     @Override
                     public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
                         super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+                        if (mLogger != null) {
+                            mLogger.log("onCharacteristicReadRequest");
+                        }
                     }
 
                     @Override
@@ -74,19 +78,12 @@ public class BleAdvertiser {
                     @Override
                     public void onNotificationSent(BluetoothDevice device, int status) {
                         super.onNotificationSent(device, status);
+                        if (mLogger != null) {
+                            mLogger.log("onNotificationSent");
+                        }
                     }
                 });
-
-                BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(UUID.fromString(Constants.CHARACTERISTIC_UUID),
-                        BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_BROADCAST | BluetoothGattCharacteristic.PROPERTY_WRITE,
-                        BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-                characteristic.setValue(77, BluetoothGattCharacteristic.FORMAT_UINT8, 0);
-                BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(UUID.fromString(Constants.DESCRIPTOR_UUID),
-                        BluetoothGattDescriptor.PERMISSION_READ);
-                // characteristic.addDescriptor(descriptor);
-                BluetoothGattService service = new BluetoothGattService(UUID.fromString(Constants.SERVICE_UUID), SERVICE_TYPE_PRIMARY);
-                service.addCharacteristic(characteristic);
-                mGattserver.addService(service);
+                mGattserver.addService(ServiceFactory.generateService());
             } else {
                 mLogger.log("Central mode not supported by the device!");
             }
@@ -109,7 +106,7 @@ public class BleAdvertiser {
         settingsBuilder.setConnectable(true);
 
         bluetoothLeAdvertiser.startAdvertising(settingsBuilder.build(), dataBuilder.build(), mAdvertiseCallback);
-        final Handler handler = new Handler();
+        final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -125,9 +122,7 @@ public class BleAdvertiser {
 
     public void sendMessage(String msg) {
         if (mConnectedDevice != null) {
-            mLogger.log("Sending meesage to the client");
-            BluetoothGattCharacteristic characteristic = new BluetoothGattCharacteristic(UUID.fromString(Constants.CHARACTERISTIC_UUID), BluetoothGattCharacteristic.PROPERTY_READ,
-                    BluetoothGattCharacteristic.PERMISSION_READ);
+            BluetoothGattCharacteristic characteristic = ServiceFactory.generateService().getCharacteristic(UUID.fromString(Constants.CHARACTERISTIC_UUID));
             characteristic.setValue(msg);
             mGattserver.notifyCharacteristicChanged(mConnectedDevice, characteristic, false);
         }
