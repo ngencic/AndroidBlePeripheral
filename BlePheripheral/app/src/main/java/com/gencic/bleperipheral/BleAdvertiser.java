@@ -109,12 +109,7 @@ public class BleAdvertiser {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                bluetoothLeAdvertiser.stopAdvertising(new AdvertiseCallback() {
-                    @Override
-                    public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                        super.onStartSuccess(settingsInEffect);
-                    }
-                });
+                bluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
             }
         }, ADVERTISE_TIMEOUT);
     }
@@ -124,6 +119,13 @@ public class BleAdvertiser {
             BluetoothGattCharacteristic characteristic = ServiceFactory.generateService().getCharacteristic(UUID.fromString(Constants.CHARACTERISTIC_UUID));
             characteristic.setValue(msg);
             mGattserver.notifyCharacteristicChanged(mConnectedDevice, characteristic, false);
+        }
+    }
+
+    public void destroy() {
+        if (mGattserver != null) {
+            mGattserver.clearServices();
+            mGattserver.close();
         }
     }
 

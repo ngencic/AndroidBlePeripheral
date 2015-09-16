@@ -34,6 +34,7 @@ public class BleScanner {
     private BluetoothLeScanner mScanner;
     private ILogger mLogger;
     private Context mContext;
+    private BluetoothGatt mGatt;
 
     public BleScanner(Context context, BluetoothManager bluetoothManager) {
         mDiscoveredDevices = new HashMap<>();
@@ -77,6 +78,7 @@ public class BleScanner {
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                 super.onServicesDiscovered(gatt, status);
+                mGatt = gatt;
                 for (int i = 0; i < gatt.getServices().size(); i++) {
                     BluetoothGattService service = gatt.getServices().get(i);
                     if (mLogger != null) {
@@ -97,6 +99,7 @@ public class BleScanner {
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                 super.onConnectionStateChange(gatt, status, newState);
+                mGatt = gatt;
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     if (mLogger != null) {
                         mLogger.log("Connected to Gatt Server");
@@ -117,6 +120,13 @@ public class BleScanner {
                 }
             }
         });
+    }
+
+    public void destroy() {
+        if (mGatt != null) {
+            mGatt.disconnect();
+            mGatt.close();
+        }
     }
 
     private ScanCallback mScanCallback = new ScanCallback() {

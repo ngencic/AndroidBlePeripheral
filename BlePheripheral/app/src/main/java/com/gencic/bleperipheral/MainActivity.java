@@ -29,6 +29,18 @@ public class MainActivity extends Activity implements OnClickListener, ILogger {
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mTextViewLog.setText("");
+        if (mAdvertiser != null) {
+            mAdvertiser.destroy();
+        }
+        if (mBleScanner != null) {
+            mBleScanner.destroy();
+        }
+    }
+
     private void startAdvertising() {
         if (mAdvertiser == null){
             mAdvertiser = new BleAdvertiser(this, mBluetoothManager);
