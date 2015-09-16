@@ -2,7 +2,6 @@ package com.gencic.bleperipheral;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
@@ -19,12 +18,12 @@ import android.os.ParcelUuid;
 
 import java.util.UUID;
 
-import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
-
 /**
  * Created by gencha on 13.9.15..
  */
 public class BleAdvertiser {
+
+    static final long ADVERTISE_TIMEOUT = 5000l;
 
     private BluetoothManager mBluetoothManager;
     private BluetoothGattServer mGattserver;
@@ -50,12 +49,12 @@ public class BleAdvertiser {
                         super.onConnectionStateChange(device, status, newState);
                         if (newState == BluetoothProfile.STATE_CONNECTED) {
                             if (mLogger != null) {
-                                mLogger.log("Device connected: " + device.getAddress());
+                                mLogger.log("Client connected: " + device.getAddress());
                             }
                             mConnectedDevice = device;
                         } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                             if (mLogger != null) {
-                                mLogger.log("Device disconnected: " + device.getAddress());
+                                mLogger.log("Client disconnected: " + device.getAddress());
                             }
                             mConnectedDevice = null;
                         }
@@ -117,7 +116,7 @@ public class BleAdvertiser {
                     }
                 });
             }
-        }, 5000);
+        }, ADVERTISE_TIMEOUT);
     }
 
     public void sendMessage(String msg) {

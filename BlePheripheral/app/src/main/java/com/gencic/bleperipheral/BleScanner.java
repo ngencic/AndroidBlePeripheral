@@ -80,7 +80,7 @@ public class BleScanner {
                 for (int i = 0; i < gatt.getServices().size(); i++) {
                     BluetoothGattService service = gatt.getServices().get(i);
                     if (mLogger != null) {
-                        mLogger.log("Service discovered " + service.getUuid());
+                        mLogger.log("Service discovered: " + service.getUuid());
                     }
                     if (service.getUuid().equals(UUID.fromString(Constants.SERVICE_UUID))) {
                         for (int j = 0; j < service.getCharacteristics().size(); j++) {
@@ -89,9 +89,6 @@ public class BleScanner {
                                 mLogger.log("Characteristic discovered: " + characteristic.getUuid());
                             }
                             gatt.setCharacteristicNotification(characteristic, true);
-                            // BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.DESCRIPTOR_UUID));
-                            // descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                            // gatt.writeDescriptor(descriptor);
                         }
                     }
                 }
