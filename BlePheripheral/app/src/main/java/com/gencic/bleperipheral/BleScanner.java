@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -35,6 +34,7 @@ public class BleScanner {
     private ILogger mLogger;
     private Context mContext;
     private BluetoothGatt mGatt;
+    private BluetoothGattCharacteristic mCharacteristic;
 
     public BleScanner(Context context, BluetoothManager bluetoothManager) {
         mDiscoveredDevices = new HashMap<>();
@@ -86,11 +86,11 @@ public class BleScanner {
                     }
                     if (service.getUuid().equals(UUID.fromString(Constants.SERVICE_UUID))) {
                         for (int j = 0; j < service.getCharacteristics().size(); j++) {
-                            BluetoothGattCharacteristic characteristic = service.getCharacteristics().get(j);
+                            mCharacteristic = service.getCharacteristics().get(j);
                             if (mLogger != null) {
-                                mLogger.log("Characteristic discovered: " + characteristic.getUuid());
+                                mLogger.log("Characteristic discovered: " + mCharacteristic.getUuid());
                             }
-                            gatt.setCharacteristicNotification(characteristic, true);
+                            gatt.setCharacteristicNotification(mCharacteristic, true);
                         }
                     }
                 }
@@ -120,6 +120,13 @@ public class BleScanner {
                 }
             }
         });
+    }
+
+    public void sendMessage(String msg) {
+        if (mCharacteristic != null) {
+            mCharacteristic.setValue(msg);
+            mGatt.writeCharacteristic(mCharacteristic);
+        }
     }
 
     public void destroy() {

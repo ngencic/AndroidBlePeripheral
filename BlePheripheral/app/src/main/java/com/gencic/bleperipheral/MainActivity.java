@@ -76,8 +76,12 @@ public class MainActivity extends Activity implements OnClickListener, ILogger {
                 startScanning();
                 break;
             case R.id.button_send:
-                if (mAdvertiser != null && mEditTextMsg.getText() != null){
-                    mAdvertiser.sendMessage(mEditTextMsg.getText().toString());
+                if (mEditTextMsg.getText() != null) {
+                    if (mBleScanner != null) {
+                        mBleScanner.sendMessage(mEditTextMsg.getText().toString());
+                    } else if (mAdvertiser != null) {
+                        mAdvertiser.sendMessage(mEditTextMsg.getText().toString());
+                    }
                 }
                 break;
         }

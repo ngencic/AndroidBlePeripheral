@@ -81,6 +81,18 @@ public class BleAdvertiser {
                             mLogger.log("onNotificationSent");
                         }
                     }
+
+                    @Override
+                    public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+                        super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
+                        if (characteristic.getUuid().equals(UUID.fromString(Constants.CHARACTERISTIC_UUID))) {
+                            String msg = "";
+                            if (value != null) {
+                                msg = new String(value);
+                            }
+                            mLogger.log("onCharacteristicWriteRequest: " + msg);
+                        }
+                    }
                 });
                 mGattserver.addService(ServiceFactory.generateService());
             } else {
