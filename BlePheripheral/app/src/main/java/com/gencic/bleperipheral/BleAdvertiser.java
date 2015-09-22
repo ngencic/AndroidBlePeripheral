@@ -19,7 +19,7 @@ import android.os.ParcelUuid;
 import java.util.UUID;
 
 /**
- * Created by gencha on 13.9.15..
+ * Created by ngencic on 13.9.15..
  */
 public class BleAdvertiser {
 
@@ -85,7 +85,7 @@ public class BleAdvertiser {
                     @Override
                     public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
                         super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-                        if (characteristic.getUuid().equals(UUID.fromString(Constants.CHARACTERISTIC_UUID))) {
+                        if (characteristic.getUuid().equals(UUID.fromString(Constants.CHAT_CHARACTERISTIC_UUID))) {
                             String msg = "";
                             if (value != null) {
                                 msg = new String(value);
@@ -108,7 +108,7 @@ public class BleAdvertiser {
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
         dataBuilder.setIncludeTxPowerLevel(false); //necessity to fit in 31 byte advertisement
         //dataBuilder.setManufacturerData(0, advertisingBytes);
-        dataBuilder.addServiceUuid(new ParcelUuid(UUID.fromString(Constants.SERVICE_UUID)));
+        dataBuilder.addServiceUuid(new ParcelUuid(UUID.fromString(Constants.CHAT_SERVICE_UUID)));
         //dataBuilder.setServiceData(pUUID, new byte[]{});
 
         AdvertiseSettings.Builder settingsBuilder = new AdvertiseSettings.Builder();
@@ -128,7 +128,7 @@ public class BleAdvertiser {
 
     public void sendMessage(String msg) {
         if (mConnectedDevice != null) {
-            BluetoothGattCharacteristic characteristic = ServiceFactory.generateService().getCharacteristic(UUID.fromString(Constants.CHARACTERISTIC_UUID));
+            BluetoothGattCharacteristic characteristic = ServiceFactory.generateService().getCharacteristic(UUID.fromString(Constants.CHAT_CHARACTERISTIC_UUID));
             characteristic.setValue(msg);
             mGattserver.notifyCharacteristicChanged(mConnectedDevice, characteristic, false);
         }

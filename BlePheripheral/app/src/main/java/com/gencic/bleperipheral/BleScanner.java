@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by gencha on 13.9.15..
+ * Created by ngencic on 13.9.15..
  */
 public class BleScanner {
 
@@ -50,7 +50,7 @@ public class BleScanner {
         if (mBluetoothManager.getAdapter().isEnabled()) {
             mDiscoveredDevices.clear();
             ScanFilter.Builder filterBuilder = new ScanFilter.Builder();
-            filterBuilder.setServiceUuid(new ParcelUuid(UUID.fromString(Constants.SERVICE_UUID)));
+            filterBuilder.setServiceUuid(new ParcelUuid(UUID.fromString(Constants.CHAT_SERVICE_UUID)));
             ScanFilter filter = filterBuilder.build();
             List<ScanFilter> filters = new ArrayList<ScanFilter>();
             filters.add(filter);
@@ -84,7 +84,7 @@ public class BleScanner {
                     if (mLogger != null) {
                         mLogger.log("Service discovered: " + service.getUuid());
                     }
-                    if (service.getUuid().equals(UUID.fromString(Constants.SERVICE_UUID))) {
+                    if (service.getUuid().equals(UUID.fromString(Constants.CHAT_SERVICE_UUID))) {
                         for (int j = 0; j < service.getCharacteristics().size(); j++) {
                             mCharacteristic = service.getCharacteristics().get(j);
                             if (mLogger != null) {
